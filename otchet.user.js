@@ -31,6 +31,18 @@
     LAST_VALUES: 'cw_tmpl_lastvals',
     BUILTIN_VER: 'cw_tmpl_builtin_ver'
   };
+    // ════════════════════════════════════════════
+  //  ВРЕМЯ ПО МСК (UTC+3)
+  // ════════════════════════════════════════════
+  function getMskDate() {
+    try {
+      // Берет время по часовому поясу Москвы и превращает в локальный объект Date
+      return new Date(new Date().toLocaleString('en-US', { timeZone: 'Europe/Moscow' }));
+    } catch(e) {
+      // Если браузер очень старый и не знает про Москву — берет локальное (на всякий случай)
+      return new Date();
+    }
+  };
 
   // ════════════════════════════════════════════
   //  ВСТРОЕННЫЕ ШАБЛОНЫ
@@ -1931,8 +1943,8 @@
     return m[block.style] || m.id;
   }
 
-  function resolveDate(block) {
-    const n = new Date();
+    function resolveDate(block) {
+    const n = getMskDate();
     const dd = String(n.getDate()).padStart(2, '0');
     const mm = String(n.getMonth() + 1).padStart(2, '0');
     const yy = String(n.getFullYear()).slice(-2);
@@ -1943,9 +1955,9 @@
   }
 
   const WEEK_DAYS_RU = ['воскресенье','понедельник','вторник','среда','четверг','пятница','суббота'];
-  function resolveDayOfWeek() { return WEEK_DAYS_RU[new Date().getDay()]; }
-  function resolveTimeNow() {
-    const n = new Date();
+    function resolveDayOfWeek() { return WEEK_DAYS_RU[getMskDate().getDay()]; }
+    function resolveTimeNow() {
+    const n = getMskDate();
     return String(n.getHours()).padStart(2, '0') + ':' + String(n.getMinutes()).padStart(2, '0');
   }
 
@@ -2078,7 +2090,7 @@
       }
 
       case 'date_ddmm': {
-        const n = new Date();
+        const n = getMskDate();
         const dd = String(n.getDate()).padStart(2, '0');
         const mm = String(n.getMonth() + 1).padStart(2, '0');
         if ((block.dayInput || 'auto') === 'auto') {
@@ -3397,7 +3409,7 @@
         else if (b.type === 'select') demo[fid] = (b.options && b.options[0]) || '';
         else if (b.type === 'select_or_number') demo[fid] = (b.options && b.options[0]) || '0';
         else if (b.type === 'number') demo[fid] = '1';
-        else if (b.type === 'date_ddmm') { const n = new Date(); demo[fid] = String(n.getDate()).padStart(2, '0') + '.' + String(n.getMonth() + 1).padStart(2, '0'); }
+        else if (b.type === 'date_ddmm') { const n = getMskDate(); demo[fid] = String(n.getDate()).padStart(2, '0') + '.' + String(n.getMonth() + 1).padStart(2, '0'); }
         else if (b.type === 'time_hm') demo[fid] = '0:00';
         else if (b.type === 'time_manual') demo[fid] = '13:47';
         else if (b.type === 'user_text') demo[fid] = 'текст';
