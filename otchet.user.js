@@ -4031,37 +4031,55 @@
   //  ИНТЕРФЕЙС НАСТРОЕК (на странице настроек)
   // ════════════════════════════════════════════
   function injectSettingsUI() {
-    // Проверяет, что мы на странице настроек
+    // Проверяем, что мы на странице настроек
     if (!location.pathname.includes('settings') && !location.pathname.includes('options')) return;
     if (document.getElementById('cw-color-settings')) return;
 
-    // Ищет контейнер, куда можно вставить настройки
-    const container = document.querySelector('.main-container') || document.body;
+    let container = null;
+
+    const forms = document.querySelectorAll('form');
+    for (let f of forms) {
+      if (f.querySelectorAll('input[type="checkbox"]').length > 3) {
+        container = f;
+        break;
+      }
+    }
+
+    if (!container) {
+      const cbs = document.querySelectorAll('input[type="checkbox"]');
+      if (cbs.length > 0) {
+        let parent = cbs[cbs.length - 1].parentElement;
+        while (parent && parent.tagName !== 'BODY' && parent.children.length < 2) {
+          parent = parent.parentElement;
+        }
+        if (parent && parent.tagName !== 'BODY') container = parent;
+      }
+    }
+
+    if (!container) {
+      container = document.querySelector('.main-container') || document.querySelector('.content') || document.querySelector('.main');
+    }
+
+    if (!container) container = document.body;
 
     const box = document.createElement('div');
     box.id = 'cw-color-settings';
-    box.style.cssText = 'margin: 15px 0; padding: 15px; background: transparent; font-family: Verdana, sans-serif; font-size: 13px; box-sizing: border-box; width: 100%;';
+    box.style.cssText = 'margin: 20px 0 10px 0; padding: 15px; background: transparent; font-family: Verdana, sans-serif; font-size: 13px; box-sizing: border-box; width: 100%;';
     
     box.innerHTML = `<h3 style="margin-top:0; font-size: 15px; font-weight: bold; border-bottom: 1px solid rgba(128,128,128,0.3); padding-bottom: 8px; margin-bottom: 12px;">Настройки цветов: Шаблоны отписей</h3>
       <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:12px;">
-        <label style="display:flex; justify-content:space-between; align-items:center; background: rgba(128,128,128,0.15); padding: 8px 12px; border-radius: 4px;">Фон панели: <input type="color" id="cw-col-bg" value="${getColors().bg}" style="border: none; background: transparent; cursor: pointer; width: 35px; height: 22px; padding: 0;"></label>
-        <label style="display:flex; justify-content:space-between; align-items:center; background: rgba(128,128,128,0.15); padding: 8px 12px; border-radius: 4px;">Цвет текста: <input type="color" id="cw-col-text" value="${getColors().text}" style="border: none; background: transparent; cursor: pointer; width: 35px; height: 22px; padding: 0;"></label>
-        <label style="display:flex; justify-content:space-between; align-items:center; background: rgba(128,128,128,0.15); padding: 8px 12px; border-radius: 4px;">Шапка панели: <input type="color" id="cw-col-header" value="${getColors().header}" style="border: none; background: transparent; cursor: pointer; width: 35px; height: 22px; padding: 0;"></label>
-        <label style="display:flex; justify-content:space-between; align-items:center; background: rgba(128,128,128,0.15); padding: 8px 12px; border-radius: 4px;">Текст шапки: <input type="color" id="cw-col-headerText" value="${getColors().headerText}" style="border: none; background: transparent; cursor: pointer; width: 35px; height: 22px; padding: 0;"></label>
-        <label style="display:flex; justify-content:space-between; align-items:center; background: rgba(128,128,128,0.15); padding: 8px 12px; border-radius: 4px;">Кнопки: <input type="color" id="cw-col-btn" value="${getColors().btn}" style="border: none; background: transparent; cursor: pointer; width: 35px; height: 22px; padding: 0;"></label>
-        <label style="display:flex; justify-content:space-between; align-items:center; background: rgba(128,128,128,0.15); padding: 8px 12px; border-radius: 4px;">Текст кнопок: <input type="color" id="cw-col-btnText" value="${getColors().btnText}" style="border: none; background: transparent; cursor: pointer; width: 35px; height: 22px; padding: 0;"></label>
+        <label style="display:flex; justify-content:space-between; align-items:center; background: rgba(128,128,128,0.15); padding: 8px 12px; border-radius: 4px; cursor:pointer;">Фон панели: <input type="color" id="cw-col-bg" value="${getColors().bg}" style="border: none; background: transparent; cursor: pointer; width: 35px; height: 22px; padding: 0;"></label>
+        <label style="display:flex; justify-content:space-between; align-items:center; background: rgba(128,128,128,0.15); padding: 8px 12px; border-radius: 4px; cursor:pointer;">Цвет текста: <input type="color" id="cw-col-text" value="${getColors().text}" style="border: none; background: transparent; cursor: pointer; width: 35px; height: 22px; padding: 0;"></label>
+        <label style="display:flex; justify-content:space-between; align-items:center; background: rgba(128,128,128,0.15); padding: 8px 12px; border-radius: 4px; cursor:pointer;">Шапка панели: <input type="color" id="cw-col-header" value="${getColors().header}" style="border: none; background: transparent; cursor: pointer; width: 35px; height: 22px; padding: 0;"></label>
+        <label style="display:flex; justify-content:space-between; align-items:center; background: rgba(128,128,128,0.15); padding: 8px 12px; border-radius: 4px; cursor:pointer;">Текст шапки: <input type="color" id="cw-col-headerText" value="${getColors().headerText}" style="border: none; background: transparent; cursor: pointer; width: 35px; height: 22px; padding: 0;"></label>
+        <label style="display:flex; justify-content:space-between; align-items:center; background: rgba(128,128,128,0.15); padding: 8px 12px; border-radius: 4px; cursor:pointer;">Кнопки: <input type="color" id="cw-col-btn" value="${getColors().btn}" style="border: none; background: transparent; cursor: pointer; width: 35px; height: 22px; padding: 0;"></label>
+        <label style="display:flex; justify-content:space-between; align-items:center; background: rgba(128,128,128,0.15); padding: 8px 12px; border-radius: 4px; cursor:pointer;">Текст кнопок: <input type="color" id="cw-col-btnText" value="${getColors().btnText}" style="border: none; background: transparent; cursor: pointer; width: 35px; height: 22px; padding: 0;"></label>
       </div>
       <div style="margin-top:15px; display:flex; gap: 10px;">
         <button id="cw-col-save" style="padding: 8px 15px; cursor:pointer; border-radius: 4px; border: 1px solid rgba(128,128,128,0.5); background: rgba(128,128,128,0.2); font-family: inherit; font-size: 13px;">Сохранить цвета</button>
         <button id="cw-col-reset" style="padding: 8px 15px; cursor:pointer; border-radius: 4px; border: 1px solid rgba(128,128,128,0.5); background: rgba(128,128,128,0.2); font-family: inherit; font-size: 13px;">Сбросить</button>
       </div>
     `;
-
-    if (container === document.body) {
-      box.style.maxWidth = '1000px';
-      box.style.margin = '15px auto';
-      box.style.padding = '15px 20px';
-    }
 
     container.appendChild(box);
 
