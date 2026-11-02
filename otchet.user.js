@@ -4031,29 +4031,37 @@
   //  ИНТЕРФЕЙС НАСТРОЕК (на странице настроек)
   // ════════════════════════════════════════════
   function injectSettingsUI() {
-    // Проверяеn, что мы на странице настроек
+    // Проверяет, что мы на странице настроек
     if (!location.pathname.includes('settings') && !location.pathname.includes('options')) return;
     if (document.getElementById('cw-color-settings')) return;
 
-    // Ищеn контейнер, куда можно вставить настройки
+    // Ищет контейнер, куда можно вставить настройки
     const container = document.querySelector('.main-container') || document.body;
 
     const box = document.createElement('div');
     box.id = 'cw-color-settings';
-    box.style.cssText = 'margin: 20px 0; padding: 15px; background: #f9f9f9; border: 1px solid #ccc; border-radius: 5px; font-family: Verdana, sans-serif; font-size: 13px;';
+    box.style.cssText = 'margin: 15px 0; padding: 15px; background: transparent; font-family: Verdana, sans-serif; font-size: 13px; box-sizing: border-box; width: 100%;';
     
-    box.innerHTML = `<h3 style="margin-top:0;">Настройки цветов: Шаблоны отписей</h3>
-      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-        <label>Фон панели: <input type="color" id="cw-col-bg" value="${getColors().bg}"></label>
-        <label>Цвет текста: <input type="color" id="cw-col-text" value="${getColors().text}"></label>
-        <label>Шапка панели: <input type="color" id="cw-col-header" value="${getColors().header}"></label>
-        <label>Текст шапки: <input type="color" id="cw-col-headerText" value="${getColors().headerText}"></label>
-        <label>Кнопки: <input type="color" id="cw-col-btn" value="${getColors().btn}"></label>
-        <label>Текст кнопок: <input type="color" id="cw-col-btnText" value="${getColors().btnText}"></label>
+    box.innerHTML = `<h3 style="margin-top:0; font-size: 15px; font-weight: bold; border-bottom: 1px solid rgba(128,128,128,0.3); padding-bottom: 8px; margin-bottom: 12px;">Настройки цветов: Шаблоны отписей</h3>
+      <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:12px;">
+        <label style="display:flex; justify-content:space-between; align-items:center; background: rgba(128,128,128,0.15); padding: 8px 12px; border-radius: 4px;">Фон панели: <input type="color" id="cw-col-bg" value="${getColors().bg}" style="border: none; background: transparent; cursor: pointer; width: 35px; height: 22px; padding: 0;"></label>
+        <label style="display:flex; justify-content:space-between; align-items:center; background: rgba(128,128,128,0.15); padding: 8px 12px; border-radius: 4px;">Цвет текста: <input type="color" id="cw-col-text" value="${getColors().text}" style="border: none; background: transparent; cursor: pointer; width: 35px; height: 22px; padding: 0;"></label>
+        <label style="display:flex; justify-content:space-between; align-items:center; background: rgba(128,128,128,0.15); padding: 8px 12px; border-radius: 4px;">Шапка панели: <input type="color" id="cw-col-header" value="${getColors().header}" style="border: none; background: transparent; cursor: pointer; width: 35px; height: 22px; padding: 0;"></label>
+        <label style="display:flex; justify-content:space-between; align-items:center; background: rgba(128,128,128,0.15); padding: 8px 12px; border-radius: 4px;">Текст шапки: <input type="color" id="cw-col-headerText" value="${getColors().headerText}" style="border: none; background: transparent; cursor: pointer; width: 35px; height: 22px; padding: 0;"></label>
+        <label style="display:flex; justify-content:space-between; align-items:center; background: rgba(128,128,128,0.15); padding: 8px 12px; border-radius: 4px;">Кнопки: <input type="color" id="cw-col-btn" value="${getColors().btn}" style="border: none; background: transparent; cursor: pointer; width: 35px; height: 22px; padding: 0;"></label>
+        <label style="display:flex; justify-content:space-between; align-items:center; background: rgba(128,128,128,0.15); padding: 8px 12px; border-radius: 4px;">Текст кнопок: <input type="color" id="cw-col-btnText" value="${getColors().btnText}" style="border: none; background: transparent; cursor: pointer; width: 35px; height: 22px; padding: 0;"></label>
       </div>
-      <button id="cw-col-save" style="margin-top:15px; padding: 5px 15px; cursor:pointer;">Сохранить цвета</button>
-      <button id="cw-col-reset" style="margin-top:15px; padding: 5px 15px; cursor:pointer; margin-left: 10px;">Сбросить</button>
+      <div style="margin-top:15px; display:flex; gap: 10px;">
+        <button id="cw-col-save" style="padding: 8px 15px; cursor:pointer; border-radius: 4px; border: 1px solid rgba(128,128,128,0.5); background: rgba(128,128,128,0.2); font-family: inherit; font-size: 13px;">Сохранить цвета</button>
+        <button id="cw-col-reset" style="padding: 8px 15px; cursor:pointer; border-radius: 4px; border: 1px solid rgba(128,128,128,0.5); background: rgba(128,128,128,0.2); font-family: inherit; font-size: 13px;">Сбросить</button>
+      </div>
     `;
+
+    if (container === document.body) {
+      box.style.maxWidth = '1000px';
+      box.style.margin = '15px auto';
+      box.style.padding = '15px 20px';
+    }
 
     container.appendChild(box);
 
@@ -4068,7 +4076,7 @@
         border: getColors().border
       };
       saveColors(colors);
-      alert('Цвета сохранены! Перезагрузите страницу, чтобы увидеть изменения везде.');
+      alert('Цвета сохранены! Перезагрузите страницу, чтобы увидеть изменения.');
     };
 
     document.getElementById('cw-col-reset').onclick = () => {
