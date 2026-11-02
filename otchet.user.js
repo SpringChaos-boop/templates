@@ -1792,6 +1792,52 @@
   }
 
   // ════════════════════════════════════════════
+  //  НАСТРОЙКИ ЦВЕТОВ
+  // ════════════════════════════════════════════
+  const COLORS_KEY = 'cw_tmpl_colors';
+  const DEFAULT_COLORS = {
+    bg: '#eeeeee',       // Фон панели и модалок
+    text: '#222222',     // Цвет текста
+    header: '#4a4a4a',   // Фон шапки панели
+    headerText: '#ffffff',// Цвет текста в шапке
+    btn: '#ffffff',      // Фон кнопок шаблонов
+    btnText: '#222222',  // Цвет текста кнопок
+    border: '#999999'    // Цвет рамок
+  };
+
+  function getColors() {
+    try {
+      const saved = JSON.parse(localStorage.getItem(COLORS_KEY));
+      return Object.assign({}, DEFAULT_COLORS, saved || {});
+    } catch(e) { return DEFAULT_COLORS; }
+  }
+
+  function saveColors(colors) {
+    localStorage.setItem(COLORS_KEY, JSON.stringify(colors));
+    applyColors();
+  }
+
+  function applyColors() {
+    const c = getColors();
+    let style = document.getElementById('cw-tmpl-color-style');
+    if (!style) {
+      style = document.createElement('style');
+      style.id = 'cw-tmpl-color-style';
+      document.head.appendChild(style);
+    }
+    style.innerHTML = `
+      #cw-tmpl-ctrl { background: ${c.bg} !important; color: ${c.text} !important; border-color: ${c.border} !important; }
+      #cw-tmpl-ctrl > div:first-child { background: ${c.header} !important; color: ${c.headerText} !important; }
+      #cw-tmpl-ctrl .cw-ctrl-btn { background: ${c.btn} !important; color: ${c.btnText} !important; border-color: ${c.border} !important; }
+      .cw-tmpl-modal { background: ${c.bg} !important; color: ${c.text} !important; border-color: ${c.border} !important; }
+      .cw-tmpl-modal > div:first-child { background: ${c.header} !important; color: ${c.headerText} !important; }
+      .cw-tmpl-modal > div:first-child b { color: ${c.headerText} !important; }
+      .cw-tmpl-btnbox { background: ${c.bg} !important; border-color: ${c.border} !important; color: ${c.text} !important; }
+      .cw-tmpl-btnbox input[type="button"] { background: ${c.btn} !important; color: ${c.btnText} !important; border-color: ${c.border} !important; }
+    `;
+  }
+
+  // ════════════════════════════════════════════
   //  МОБИЛЬНЫЕ СТИЛИ
   // ════════════════════════════════════════════
   function injectMobileStyles() {
@@ -3670,11 +3716,11 @@
 
     const secCreate = document.createElement('div');
     secCreate.style.cssText = 'margin-bottom:6px;display:flex;gap:4px;flex-wrap:wrap;';
-    secCreate.innerHTML =
-      '<button id="cw-ctrl-create" style="font-size:11px;padding:3px 8px;border:1px solid #5a5;background:#cde8cd;cursor:pointer;">+ Создать шаблон</button>' +
-      '<button id="cw-ctrl-savefile" style="font-size:11px;padding:3px 8px;cursor:pointer;">⬇ Скачать .json</button>' +
-      '<button id="cw-ctrl-loadfile" style="font-size:11px;padding:3px 8px;cursor:pointer;">⬆ Загрузить .json</button>' +
-      '<button id="cw-ctrl-reload-builtin" style="font-size:11px;padding:3px 8px;cursor:pointer;">↻ Перезалить вшитые</button>';
+      secCreate.innerHTML =
+      '<button id="cw-ctrl-create" class="cw-ctrl-btn" style="font-size:11px;padding:3px 8px;cursor:pointer;">+ Создать шаблон</button>' +
+      '<button id="cw-ctrl-savefile" class="cw-ctrl-btn" style="font-size:11px;padding:3px 8px;cursor:pointer;">⬇ Скачать .json</button>' +
+      '<button id="cw-ctrl-loadfile" class="cw-ctrl-btn" style="font-size:11px;padding:3px 8px;cursor:pointer;">⬆ Загрузить .json</button>' +
+      '<button id="cw-ctrl-reload-builtin" class="cw-ctrl-btn" style="font-size:11px;padding:3px 8px;cursor:pointer;">↻ Перезалить вшитые</button>';
     content.appendChild(secCreate);
 
     const secSearch = document.createElement('div');
@@ -3981,7 +4027,62 @@
     saveData(data, { skipBackup: true });
   }
 
-  function init() {
+  // ════════════════════════════════════════════
+  //  ИНТЕРФЕЙС НАСТРОЕК (на странице настроек)
+  // ════════════════════════════════════════════
+  function injectSettingsUI() {
+    // Проверяеn, что мы на странице настроек
+    if (!location.pathname.includes('settings') && !location.pathname.includes('options')) return;
+    if (document.getElementById('cw-color-settings')) return;
+
+    // Ищеn контейнер, куда можно вставить настройки
+    const container = document.querySelector('.main-container') || document.body;
+
+    const box = document.createElement('div');
+    box.id = 'cw-color-settings';
+    box.style.cssText = 'margin: 20px 0; padding: 15px; background: #f9f9f9; border: 1px solid #ccc; border-radius: 5px; font-family: Verdana, sans-serif; font-size: 13px;';
+    
+    box.innerHTML = `<h3 style="margin-top:0;">Настройки цветов: Шаблоны отписей</h3>
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+        <label>Фон панели: <input type="color" id="cw-col-bg" value="${getColors().bg}"></label>
+        <label>Цвет текста: <input type="color" id="cw-col-text" value="${getColors().text}"></label>
+        <label>Шапка панели: <input type="color" id="cw-col-header" value="${getColors().header}"></label>
+        <label>Текст шапки: <input type="color" id="cw-col-headerText" value="${getColors().headerText}"></label>
+        <label>Кнопки: <input type="color" id="cw-col-btn" value="${getColors().btn}"></label>
+        <label>Текст кнопок: <input type="color" id="cw-col-btnText" value="${getColors().btnText}"></label>
+      </div>
+      <button id="cw-col-save" style="margin-top:15px; padding: 5px 15px; cursor:pointer;">Сохранить цвета</button>
+      <button id="cw-col-reset" style="margin-top:15px; padding: 5px 15px; cursor:pointer; margin-left: 10px;">Сбросить</button>
+    `;
+
+    container.appendChild(box);
+
+    document.getElementById('cw-col-save').onclick = () => {
+      const colors = {
+        bg: document.getElementById('cw-col-bg').value,
+        text: document.getElementById('cw-col-text').value,
+        header: document.getElementById('cw-col-header').value,
+        headerText: document.getElementById('cw-col-headerText').value,
+        btn: document.getElementById('cw-col-btn').value,
+        btnText: document.getElementById('cw-col-btnText').value,
+        border: getColors().border
+      };
+      saveColors(colors);
+      alert('Цвета сохранены! Перезагрузите страницу, чтобы увидеть изменения везде.');
+    };
+
+    document.getElementById('cw-col-reset').onclick = () => {
+      if(confirm('Сбросить все цвета на стандартные?')) {
+        saveColors(DEFAULT_COLORS);
+        location.reload();
+      }
+    };
+  }
+
+    function init() {
+    applyColors(); 
+    injectSettingsUI(); 
+
     if (!isBlogPage()) return;
     injectMobileStyles();
     addControlPanel();
