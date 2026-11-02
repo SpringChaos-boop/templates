@@ -1792,6 +1792,88 @@
   }
 
   // ════════════════════════════════════════════
+  //  МОБИЛЬНЫЕ СТИЛИ
+  // ════════════════════════════════════════════
+  function injectMobileStyles() {
+    const style = document.createElement('style');
+    style.innerHTML = `
+      @media (max-width: 768px) {
+        /* Увеличиваем панель управления и делаем её шире */
+        #cw-tmpl-ctrl {
+          width: 100% !important;
+          max-width: 100% !important;
+          bottom: 0 !important;
+          left: 0 !important;
+          border-radius: 8px 8px 0 0 !important;
+          border-left: none !important;
+          border-right: none !important;
+          border-bottom: none !important;
+        }
+        
+        /* Модальное окно на весь экран */
+        .cw-tmpl-modal-overlay {
+          align-items: flex-end !important;
+        }
+        .cw-tmpl-modal {
+          width: 100% !important;
+          max-width: 100% !important;
+          max-height: 95vh !important;
+          border-radius: 12px 12px 0 0 !important;
+          border-bottom: none !important;
+          margin: 0 !important;
+        }
+        
+        /* Увеличиваем поля ввода (чтобы iOS не зумил экран) */
+        .cw-tmpl-modal input[type="text"],
+        .cw-tmpl-modal input[type="number"],
+        .cw-tmpl-modal select,
+        .cw-tmpl-modal textarea {
+          font-size: 16px !important;
+          padding: 8px 10px !important;
+          min-height: 42px !important;
+          box-sizing: border-box !important;
+        }
+
+        /* Увеличиваем кнопки */
+        .cw-tmpl-modal button,
+        #cw-tmpl-ctrl button,
+        .cw-tmpl-btnbox input[type="button"] {
+          font-size: 14px !important;
+          padding: 10px 14px !important;
+          min-height: 44px !important; /* Удобный размер для пальца */
+        }
+
+        /* Увеличиваем чекбоксы */
+        .cw-tmpl-modal input[type="checkbox"] {
+          width: 22px !important;
+          height: 22px !important;
+        }
+
+        /* Делаем кнопки в шапке/подвале модалки побольше и в столбик */
+        .cw-tmpl-modal > div:last-child {
+          flex-wrap: wrap !important;
+          justify-content: center !important;
+          padding-bottom: 15px !important; /* Отступ от края экрана */
+        }
+        
+        .cw-tmpl-modal > div:last-child > div {
+          flex: 1 1 100% !important;
+          display: flex !important;
+          justify-content: space-between !important;
+        }
+
+        /* Кнопки шаблонов над формой комментария */
+        .cw-tmpl-btnbox input[type="button"] {
+          width: 100% !important;
+          margin: 4px 0 !important;
+          display: block !important;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  // ════════════════════════════════════════════
   //  ХРАНИЛИЩЕ
   // ════════════════════════════════════════════
   function migrate(raw) {
@@ -3901,6 +3983,7 @@
 
   function init() {
     if (!isBlogPage()) return;
+    injectMobileStyles();
     addControlPanel();
     refreshTemplateButtons();
   }
