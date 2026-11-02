@@ -1795,15 +1795,16 @@
   //  НАСТРОЙКИ ЦВЕТОВ
   // ════════════════════════════════════════════
   const COLORS_KEY = 'cw_tmpl_colors';
-  const DEFAULT_COLORS = {
-    bg: '#eeeeee',       // Фон панели и модалок
-    text: '#222222',     // Цвет текста
-    header: '#4a4a4a',   // Фон шапки панели
-    headerText: '#ffffff',// Цвет текста в шапке
-    btn: '#ffffff',      // Фон кнопок шаблонов
-    btnText: '#222222',  // Цвет текста кнопок
-    border: '#999999'    // Цвет рамок
+
+  const THEMES = {
+    light: { bg: '#eeeeee', text: '#222222', header: '#4a4a4a', headerText: '#ffffff', btn: '#ffffff', btnText: '#222222', border: '#999999' },
+    dark:  { bg: '#2b2b2b', text: '#e0e0e0', header: '#1a1a1a', headerText: '#ffffff', btn: '#444444', btnText: '#e0e0e0', border: '#555555' },
+    blue:  { bg: '#e0f2fe', text: '#0c4a6e', header: '#0284c7', headerText: '#ffffff', btn: '#ffffff', btnText: '#0284c7', border: '#7dd3fc' },
+    green: { bg: '#dcfce7', text: '#14532d', header: '#16a34a', headerText: '#ffffff', btn: '#ffffff', btnText: '#16a34a', border: '#86efac' },
+    pink:  { bg: '#fce7f3', text: '#831843', header: '#db2777', headerText: '#ffffff', btn: '#ffffff', btnText: '#db2777', border: '#fbcfe8' }
   };
+
+  const DEFAULT_COLORS = THEMES.light;
 
   function getColors() {
     try {
@@ -1817,7 +1818,7 @@
     applyColors();
   }
 
-  function applyColors() {
+    function applyColors() {
     const c = getColors();
     let style = document.getElementById('cw-tmpl-color-style');
     if (!style) {
@@ -1826,14 +1827,84 @@
       document.head.appendChild(style);
     }
     style.innerHTML = `
+      /* ПАНЕЛЬ УПРАВЛЕНИЯ */
       #cw-tmpl-ctrl { background: ${c.bg} !important; color: ${c.text} !important; border-color: ${c.border} !important; }
       #cw-tmpl-ctrl > div:first-child { background: ${c.header} !important; color: ${c.headerText} !important; }
       #cw-tmpl-ctrl .cw-ctrl-btn { background: ${c.btn} !important; color: ${c.btnText} !important; border-color: ${c.border} !important; }
-      .cw-tmpl-modal { background: ${c.bg} !important; color: ${c.text} !important; border-color: ${c.border} !important; }
-      .cw-tmpl-modal > div:first-child { background: ${c.header} !important; color: ${c.headerText} !important; }
-      .cw-tmpl-modal > div:first-child b { color: ${c.headerText} !important; }
+
+      /* КНОПКИ НАД ФОРМОЙ КОММЕНТАРИЯ */
       .cw-tmpl-btnbox { background: ${c.bg} !important; border-color: ${c.border} !important; color: ${c.text} !important; }
+      .cw-tmpl-btnbox > div { color: ${c.text} !important; }
       .cw-tmpl-btnbox input[type="button"] { background: ${c.btn} !important; color: ${c.btnText} !important; border-color: ${c.border} !important; }
+
+      /* МОДАЛЬНЫЕ ОКНА (ФОРМЫ) */
+      .cw-tmpl-modal { background: ${c.bg} !important; border-color: ${c.border} !important; color: ${c.text} !important; }
+      .cw-tmpl-modal > div:first-child { background: ${c.header} !important; color: ${c.headerText} !important; border-color: ${c.border} !important; }
+      .cw-tmpl-modal > div:last-child { background: ${c.header} !important; border-color: ${c.border} !important; }
+
+      /* ВСЕ ПОЛЯ ВВОДА (принудительно) */
+      .cw-tmpl-modal input,
+      .cw-tmpl-modal select,
+      .cw-tmpl-modal textarea {
+        background: ${c.btn} !important;
+        color: ${c.btnText} !important;
+        border-color: ${c.border} !important;
+      }
+
+      /* АВТО-ПОЛЯ (ID, дата) */
+      .cw-tmpl-modal span[style*="background:#e8e8e8"],
+      .cw-tmpl-modal span[style*="background: rgb(232, 232, 232)"] {
+        background: ${c.btn} !important;
+        color: ${c.btnText} !important;
+        border-color: ${c.border} !important;
+      }
+
+      /* РАСКРЫВАЮЩИЕСЯ ГРУППЫ И ИХ ЗАГОЛОВКИ */
+      .cw-tmpl-modal div[style*="background:#e8e8e8"],
+      .cw-tmpl-modal div[style*="background: rgb(232, 232, 232)"],
+      .cw-tmpl-modal div[style*="background:#d8d8d8"],
+      .cw-tmpl-modal div[style*="background: rgb(216, 216, 216)"] {
+        background: ${c.header} !important;
+        color: ${c.headerText} !important;
+        border-color: ${c.border} !important;
+      }
+
+      .cw-tmpl-modal div[style*="background:#fff"],
+      .cw-tmpl-modal div[style*="background: rgb(255, 255, 255)"],
+      .cw-tmpl-modal div[style*="background:#f8f8f8"],
+      .cw-tmpl-modal div[style*="background: rgb(248, 248, 248)"],
+      .cw-tmpl-modal div[style*="background:#fafafa"] {
+        background: ${c.bg} !important;
+        color: ${c.text} !important;
+      }
+
+      /* МУЛЬТИВЫБОР (ЧИПСЫ) */
+      .cw-tmpl-modal span[style*="background:#e8e8e0"] {
+        background: ${c.btn} !important;
+        color: ${c.btnText} !important;
+        border-color: ${c.border} !important;
+      }
+      .cw-tmpl-modal span[style*="background:#c8d8c8"] {
+        background: ${c.header} !important;
+        color: ${c.headerText} !important;
+        border-color: ${c.border} !important;
+      }
+
+      /* ПРЕДПРОСМОТР */
+      .cw-tmpl-modal div[style*="background:#f8f8f5"],
+      .cw-tmpl-modal div[style*="background: rgb(248, 248, 245)"] {
+        background: ${c.btn} !important;
+        color: ${c.btnText} !important;
+        border-color: ${c.border} !important;
+      }
+
+      /* ПОДПИСИ (Текст над полями) */
+      .cw-tmpl-label,
+      .cw-tmpl-modal div[style*="color:#555"],
+      .cw-tmpl-modal div[style*="color: rgb(85, 85, 85)"] {
+        color: ${c.text} !important;
+        opacity: 0.8;
+      }
     `;
   }
 
@@ -2161,6 +2232,7 @@
       : 'margin-bottom:6px;';
 
     const label = document.createElement('div');
+    label.className = 'cw-tmpl-label';
     label.style.cssText = nested
       ? 'font-size:12px;color:#555;margin-bottom:4px;font-weight:500;'
       : 'font-size:11px;color:#555;margin-bottom:2px;';
@@ -3002,6 +3074,7 @@
     overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:99999;display:flex;align-items:center;justify-content:center;';
 
     const modal = document.createElement('div');
+    modal.className = 'cw-tmpl-modal';
     modal.style.cssText = 'background:#f0f0eb;border:1px solid #888;max-width:560px;width:92%;max-height:85vh;display:flex;flex-direction:column;font-family:Verdana,Arial,sans-serif;font-size:12px;box-shadow:0 4px 16px rgba(0,0,0,0.3);';
 
     const head = document.createElement('div');
@@ -3399,6 +3472,7 @@
     overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:99999;display:flex;align-items:center;justify-content:center;';
 
     const modal = document.createElement('div');
+    modal.className = 'cw-tmpl-modal';
     modal.style.cssText = 'background:#f0f0eb;border:1px solid #888;max-width:640px;width:94%;max-height:88vh;display:flex;flex-direction:column;font-family:Verdana,Arial,sans-serif;font-size:12px;box-shadow:0 4px 16px rgba(0,0,0,0.3);';
 
     const head = document.createElement('div');
@@ -4031,12 +4105,10 @@
   //  ИНТЕРФЕЙС НАСТРОЕК (на странице настроек)
   // ════════════════════════════════════════════
   function injectSettingsUI() {
-    // Проверяем, что мы на странице настроек
     if (!location.pathname.includes('settings') && !location.pathname.includes('options')) return;
     if (document.getElementById('cw-color-settings')) return;
 
     let container = null;
-
     const forms = document.querySelectorAll('form');
     for (let f of forms) {
       if (f.querySelectorAll('input[type="checkbox"]').length > 3) {
@@ -4044,36 +4116,53 @@
         break;
       }
     }
-
     if (!container) {
       const cbs = document.querySelectorAll('input[type="checkbox"]');
       if (cbs.length > 0) {
         let parent = cbs[cbs.length - 1].parentElement;
-        while (parent && parent.tagName !== 'BODY' && parent.children.length < 2) {
-          parent = parent.parentElement;
-        }
+        while (parent && parent.tagName !== 'BODY' && parent.children.length < 2) parent = parent.parentElement;
         if (parent && parent.tagName !== 'BODY') container = parent;
       }
     }
+    if (!container) container = document.querySelector('.main-container') || document.querySelector('.content') || document.querySelector('.main') || document.body;
 
-    if (!container) {
-      container = document.querySelector('.main-container') || document.querySelector('.content') || document.querySelector('.main');
+    const currentColors = getColors();
+    let currentTheme = 'custom';
+    for (const [key, t] of Object.entries(THEMES)) {
+      if (t.bg === currentColors.bg && t.text === currentColors.text && t.header === currentColors.header) {
+        currentTheme = key;
+        break;
+      }
     }
-
-    if (!container) container = document.body;
 
     const box = document.createElement('div');
     box.id = 'cw-color-settings';
     box.style.cssText = 'margin: 20px 0 10px 0; padding: 15px; background: transparent; font-family: Verdana, sans-serif; font-size: 13px; box-sizing: border-box; width: 100%;';
-    
-    box.innerHTML = `<h3 style="margin-top:0; font-size: 15px; font-weight: bold; border-bottom: 1px solid rgba(128,128,128,0.3); padding-bottom: 8px; margin-bottom: 12px;">Настройки цветов: Шаблоны отписей</h3>
+
+    box.innerHTML = `
+      <h3 style="margin-top:0; font-size: 15px; font-weight: bold; border-bottom: 1px solid rgba(128,128,128,0.3); padding-bottom: 8px; margin-bottom: 12px;">Настройки цветов: Шаблоны отписей</h3>
+
+      <div style="margin-bottom: 15px; background: rgba(128,128,128,0.15); padding: 10px 12px; border-radius: 4px; display: inline-block;">
+        <label style="display:flex; align-items:center; gap:10px; font-weight:bold;">
+          Готовая тема:
+          <select id="cw-col-theme" style="padding: 4px 8px; border-radius: 4px; border: 1px solid rgba(128,128,128,0.5); background: #fff; color: #000; font-size: 13px;">
+            <option value="light">Светлая (стандартная)</option>
+            <option value="dark">Темная</option>
+            <option value="blue">Голубая</option>
+            <option value="green">Зеленая</option>
+            <option value="pink">Розовая</option>
+            <option value="custom">Свои цвета...</option>
+          </select>
+        </label>
+      </div>
+
       <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:12px;">
-        <label style="display:flex; justify-content:space-between; align-items:center; background: rgba(128,128,128,0.15); padding: 8px 12px; border-radius: 4px; cursor:pointer;">Фон панели: <input type="color" id="cw-col-bg" value="${getColors().bg}" style="border: none; background: transparent; cursor: pointer; width: 35px; height: 22px; padding: 0;"></label>
-        <label style="display:flex; justify-content:space-between; align-items:center; background: rgba(128,128,128,0.15); padding: 8px 12px; border-radius: 4px; cursor:pointer;">Цвет текста: <input type="color" id="cw-col-text" value="${getColors().text}" style="border: none; background: transparent; cursor: pointer; width: 35px; height: 22px; padding: 0;"></label>
-        <label style="display:flex; justify-content:space-between; align-items:center; background: rgba(128,128,128,0.15); padding: 8px 12px; border-radius: 4px; cursor:pointer;">Шапка панели: <input type="color" id="cw-col-header" value="${getColors().header}" style="border: none; background: transparent; cursor: pointer; width: 35px; height: 22px; padding: 0;"></label>
-        <label style="display:flex; justify-content:space-between; align-items:center; background: rgba(128,128,128,0.15); padding: 8px 12px; border-radius: 4px; cursor:pointer;">Текст шапки: <input type="color" id="cw-col-headerText" value="${getColors().headerText}" style="border: none; background: transparent; cursor: pointer; width: 35px; height: 22px; padding: 0;"></label>
-        <label style="display:flex; justify-content:space-between; align-items:center; background: rgba(128,128,128,0.15); padding: 8px 12px; border-radius: 4px; cursor:pointer;">Кнопки: <input type="color" id="cw-col-btn" value="${getColors().btn}" style="border: none; background: transparent; cursor: pointer; width: 35px; height: 22px; padding: 0;"></label>
-        <label style="display:flex; justify-content:space-between; align-items:center; background: rgba(128,128,128,0.15); padding: 8px 12px; border-radius: 4px; cursor:pointer;">Текст кнопок: <input type="color" id="cw-col-btnText" value="${getColors().btnText}" style="border: none; background: transparent; cursor: pointer; width: 35px; height: 22px; padding: 0;"></label>
+        <label style="display:flex; justify-content:space-between; align-items:center; background: rgba(128,128,128,0.15); padding: 8px 12px; border-radius: 4px; cursor:pointer;">Фон панели: <input type="color" id="cw-col-bg" value="${currentColors.bg}" style="border: none; background: transparent; cursor: pointer; width: 35px; height: 22px; padding: 0;"></label>
+        <label style="display:flex; justify-content:space-between; align-items:center; background: rgba(128,128,128,0.15); padding: 8px 12px; border-radius: 4px; cursor:pointer;">Цвет текста: <input type="color" id="cw-col-text" value="${currentColors.text}" style="border: none; background: transparent; cursor: pointer; width: 35px; height: 22px; padding: 0;"></label>
+        <label style="display:flex; justify-content:space-between; align-items:center; background: rgba(128,128,128,0.15); padding: 8px 12px; border-radius: 4px; cursor:pointer;">Шапка панели: <input type="color" id="cw-col-header" value="${currentColors.header}" style="border: none; background: transparent; cursor: pointer; width: 35px; height: 22px; padding: 0;"></label>
+        <label style="display:flex; justify-content:space-between; align-items:center; background: rgba(128,128,128,0.15); padding: 8px 12px; border-radius: 4px; cursor:pointer;">Текст шапки: <input type="color" id="cw-col-headerText" value="${currentColors.headerText}" style="border: none; background: transparent; cursor: pointer; width: 35px; height: 22px; padding: 0;"></label>
+        <label style="display:flex; justify-content:space-between; align-items:center; background: rgba(128,128,128,0.15); padding: 8px 12px; border-radius: 4px; cursor:pointer;">Кнопки: <input type="color" id="cw-col-btn" value="${currentColors.btn}" style="border: none; background: transparent; cursor: pointer; width: 35px; height: 22px; padding: 0;"></label>
+        <label style="display:flex; justify-content:space-between; align-items:center; background: rgba(128,128,128,0.15); padding: 8px 12px; border-radius: 4px; cursor:pointer;">Текст кнопок: <input type="color" id="cw-col-btnText" value="${currentColors.btnText}" style="border: none; background: transparent; cursor: pointer; width: 35px; height: 22px; padding: 0;"></label>
       </div>
       <div style="margin-top:15px; display:flex; gap: 10px;">
         <button id="cw-col-save" style="padding: 8px 15px; cursor:pointer; border-radius: 4px; border: 1px solid rgba(128,128,128,0.5); background: rgba(128,128,128,0.2); font-family: inherit; font-size: 13px;">Сохранить цвета</button>
@@ -4083,22 +4172,55 @@
 
     container.appendChild(box);
 
+    // --- Логика переключения тем ---
+    const themeSelect = document.getElementById('cw-col-theme');
+    const colorInputs = {
+      bg: document.getElementById('cw-col-bg'),
+      text: document.getElementById('cw-col-text'),
+      header: document.getElementById('cw-col-header'),
+      headerText: document.getElementById('cw-col-headerText'),
+      btn: document.getElementById('cw-col-btn'),
+      btnText: document.getElementById('cw-col-btnText')
+    };
+
+    themeSelect.value = currentTheme;
+
+    // При смене темы автоматически выставляет цвета
+    themeSelect.onchange = () => {
+      const t = THEMES[themeSelect.value];
+      if (t) {
+        colorInputs.bg.value = t.bg;
+        colorInputs.text.value = t.text;
+        colorInputs.header.value = t.header;
+        colorInputs.headerText.value = t.headerText;
+        colorInputs.btn.value = t.btn;
+        colorInputs.btnText.value = t.btnText;
+      }
+    };
+
+    // Если пользователь вручную меняет цвет, переключает на "Свои цвета"
+    Object.values(colorInputs).forEach(inp => {
+      inp.oninput = () => { themeSelect.value = 'custom'; };
+    });
+
+    // Кнопка сохранения
     document.getElementById('cw-col-save').onclick = () => {
       const colors = {
-        bg: document.getElementById('cw-col-bg').value,
-        text: document.getElementById('cw-col-text').value,
-        header: document.getElementById('cw-col-header').value,
-        headerText: document.getElementById('cw-col-headerText').value,
-        btn: document.getElementById('cw-col-btn').value,
-        btnText: document.getElementById('cw-col-btnText').value,
+        bg: colorInputs.bg.value,
+        text: colorInputs.text.value,
+        header: colorInputs.header.value,
+        headerText: colorInputs.headerText.value,
+        btn: colorInputs.btn.value,
+        btnText: colorInputs.btnText.value,
         border: getColors().border
       };
       saveColors(colors);
       alert('Цвета сохранены! Перезагрузите страницу, чтобы увидеть изменения.');
     };
 
+    // Кнопка сброса
     document.getElementById('cw-col-reset').onclick = () => {
-      if(confirm('Сбросить все цвета на стандартные?')) {
+      if(confirm('Сбросить все цвета на стандартные (Светлая тема)?')) {
         saveColors(DEFAULT_COLORS);
         location.reload();
       }
