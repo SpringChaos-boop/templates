@@ -6,6 +6,7 @@
 // @author       Первая версия и идея принадлежат OGRTSV; исправления, доработка, улучшения и текущая поддержка осуществляются игроком Горицвет [1705753]
 // @match        http*://*.catwar.net/*
 // @match        http*://*.catwar.su/*
+// @icon         https://tinyurl.com/2wy88yub
 // @updateURL    https://github.com/SpringChaos-boop/templates/raw/refs/heads/main/otchet.user.js
 // @downloadURL  https://github.com/SpringChaos-boop/templates/raw/refs/heads/main/otchet.user.js
 // @grant        none
